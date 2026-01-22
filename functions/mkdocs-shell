@@ -1,0 +1,6 @@
+# vim: filetype=zsh: tabstop=3: shiftwidth=3: noexpandtab:
+
+mkpr-init__ || return 100
+
+nix develop "$( path__ nixpr )" "${@}" ||
+	err__ "Error running the nix shell"

@@ -1,0 +1,99 @@
+#! /usr/bin/env zsh
+# vim: filetype=zsh: tabstop=3: shiftwidth=3: noexpandtab:
+
+function print_help__ () {
+	cat - <<'eos'
+
+mkd help:
+	this help
+
+mkd nixupd:
+mkd nix-update:
+	updates the nix profile
+
+mkd new [folder_name]:
+	creates a new mkdocs project with the name indicated
+
+mkd shell:
+	enters on a nix shell with mkdocs dependencies
+
+mkd build
+	build the website of the current ptoject
+	also moves the pdf files in the project root folder
+
+mkd serve
+	serves the website
+	Some options:
+		--clean
+			do a clean build and then serve
+		
+		--no-livereload
+			disable livereload
+		
+		--dirty
+			just rebuild what has changed
+
+		--dev-addr
+			ip and port (default localhost:8000)
+		
+		--help
+			all the help
+eos
+}
+
+function print_cmd_err__ () {
+	print - \
+		"\e[91;1mERR:\e[22m" \
+		"Command mkd \e[1m${1}\e[22m not valid\e[0m"
+	
+	print
+
+	print_help__
+}
+
+local    sdir    initpth nixprdir thecmd 
+local -a theargs
+
+## LOAD INIT
+sdir=${(%):-'%x'}
+sdir=${sdir:a:h:h}/scripts
+sdir=${sdir:A}
+
+initpth=${sdir}/init.zsh
+
+source "${initpth}"
+
+if (( $? != 0 )); then
+	print -u2 - \
+		"ERR: Can't load the init script (${(qq)${(D)sdir}})"
+
+	return 100
+fi
+
+## EXEC COMMAND
+thecmd="$( trim__ "${1:-}")"
+theargs=( "${@[2,-1]}" )
+nixprdir="$( path__ nixpr )"
+
+if [[ -z ${thecmd} ]]; then
+	print_help__
+else
+	case "${thecmd}"; in
+		help)  print_help__ ;;
+
+		nixupd) ;&
+		nix-update)
+			nix develop \
+				--profile "${nixprdir}" \
+				github:juanma151/mkdocs-env-old \
+				--command true
+			;;
+
+		new)   ;&
+		serve) ;&
+		build) ;&
+		shell) mkdocs-${thecmd} "${(@)theargs}" ;;
+		
+		*)  print_cmd_err__ "${thecmd}" ;;
+	esac
+fi

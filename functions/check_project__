@@ -1,0 +1,12 @@
+# vim: filetype=zsh: tabstop=3: shiftwidth=3: noexpandtab:
+
+mkpr-init__ || return 100
+
+local -i hasprj
+
+typeset -g -A __MKDOCSPRJS_DIRS
+
+hasprj=${${__MKDOCSPRJS_DIRS[hasproject]}:-0}
+
+(( hasprj == 1 )) ||
+	err__ "This is not a mkdocs project folder"

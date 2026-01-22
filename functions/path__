@@ -1,0 +1,18 @@
+# vim: filetype=zsh: tabstop=3: shiftwidth=3: noexpandtab:
+
+mkpr-init__ || return 100
+
+local    key extra pth
+local -r ptn='/##'
+
+typeset -g -A __MKDOCSPRJS_DIRS
+
+key=${1:-}
+extra="$( trim__ "${2:-}" )"
+
+pth="$( trim-nnull__ "${${__MKDOCSPRJS_DIRS[${key}]}:-}" )" ||
+	err__ "There is no folder ${(qq)key}"
+
+[[ -n ${extra} ]] && pth=${pth}/${extra##${~ptn}}
+
+print - "${pth}"

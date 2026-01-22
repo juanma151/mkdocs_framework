@@ -1,0 +1,19 @@
+# vim: filetype=zsh: tabstop=3: shiftwidth=3: noexpandtab:
+
+typeset -g __MKDOCSPRJS_INIT
+
+if (( ${__MKDOCSPRJS_INIT:-0} != 1 )); then
+	local fxdir spth
+
+	fxdir=${(%):-'%x'}
+	fxdir=${fxdir:a:h}
+
+	spth=${fxdir:h}/scripts/init.zsh
+
+	if [[ -a "${spth}" ]]; then
+		. "${spth}"
+	else
+		print -u2 - \
+			"ERR: Can't load init file (${(qq)${(D)spth}})"
+	fi
+fi

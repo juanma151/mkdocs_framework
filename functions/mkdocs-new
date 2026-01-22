@@ -1,0 +1,53 @@
+# vim: filetype=zsh: tabstop=3: shiftwidth=3: noexpandtab:
+
+mkpr-init__ || return 100
+
+local    prjname prjpth initscript baseenvrc prjenvrc
+local -r ptn1='/##'
+local -r ptn2='*/*'
+
+prjname="$( trim-nnull__ "${1:-}" )" ||
+	err__ "The name for the new project cannot be empty"
+
+prjname=${prjname##${~ptn1}}
+
+[[ "${prjname}" == ${~ptn2} ]] &&
+	err__ \
+		"The name for the project cannot contains '/':" \
+		${(qq)prjname}
+
+prjpth=$( path__ base "${prjname}" )
+
+[[ -a "${prjpth}" ]] &&
+	err__ "The project already exists in ${(qq)${(D)prjpth}}"
+
+mkdir "${prjpth}"
+
+(
+	cd "${prjpth}"
+	mkdocs-shell --command bash -c 'mkdocs-init src'
+) ||
+		err__ \
+			"Couldn't initialize mkdocs project in ${(qq)${(D)prjpth}}"
+
+
+mkdir -p "${prjpth}"/.data/paths
+ln -s "${prjpth}"/src      "${prjpth}"/.data/paths/mkdocs-prj
+ln -s "${prjpth}"/src/docs "${prjpth}"/.data/paths/docs-src
+
+
+# envrc for the project (will call the generic envrc)
+baseenvrc="$( path__ envrc )"
+prjenvrc="${prjpth}"/.envrc
+
+cat - <<eos > ${prjenvrc}
+# vim: filetype=zsh: tabstop=3: shiftwidth=3: noexpandtab:
+
+# export the project path
+export __MKDOCSPRJS_PRJ_PATH="${prjpth}"
+
+# general .envrc
+source_env "${baseenvrc}"
+eos
+
+direnv allow "${prjenvrc}"

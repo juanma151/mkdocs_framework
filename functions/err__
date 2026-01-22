@@ -1,0 +1,4 @@
+# vim: filetype=zsh: tabstop=3: shiftwidth=3: noexpandtab:
+
+print -u2 - "ERR: ${*}"
+return 100

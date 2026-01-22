@@ -1,0 +1,11 @@
+# vim: filetype=zsh: tabstop=3: shiftwidth=3: noexpandtab:
+
+mkpr-init__ || return 100
+
+local val
+local -r ptn=$'[ \t\n\0]##'
+
+val=${1:-}
+val=${${val##${~ptn}}%%${~ptn}}
+
+print - "${val}"

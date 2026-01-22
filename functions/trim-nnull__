@@ -1,0 +1,11 @@
+# vim: filetype=zsh: tabstop=3: shiftwidth=3: noexpandtab:
+
+mkpr-init__ || return 100
+
+local val
+
+val="$( trim__ "${1:-}" )"
+
+[[ -n ${val} ]]
+
+print - "${val}"

@@ -1,0 +1,20 @@
+# vim: filetype=zsh: tabstop=3: shiftwidth=3: noexpandtab:
+
+mkpr-init__ || return 100
+
+local    prjpth
+local -a theargs
+
+check_project__
+
+prjpth=$( path__ project )
+theargs=( "${@}" )
+
+## Build
+(
+	cd "${prjpth}/.data/paths/mkdocs-prj"
+
+	mkdocs-shell --command bash -c \
+		"mkdocs serve ${(qq@)theargs}"
+) ||
+	err__ "Error running the nix shell"
