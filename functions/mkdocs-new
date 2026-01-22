@@ -2,7 +2,7 @@
 
 mkpr-init__ || return 100
 
-local    prjname prjpth initscript baseenvrc prjenvrc
+local    prjname prjpth initscript baseenvrc prjenvrc ignore
 local -r ptn1='/##'
 local -r ptn2='*/*'
 
@@ -32,22 +32,29 @@ mkdir "${prjpth}"
 
 
 mkdir -p "${prjpth}"/.data/paths
-ln -s "${prjpth}"/src      "${prjpth}"/.data/paths/mkdocs-prj
-ln -s "${prjpth}"/src/docs "${prjpth}"/.data/paths/docs-src
+ln -s ../../src      "${prjpth}"/.data/paths/mkdocs-prj
+ln -s ../../src/docs "${prjpth}"/.data/paths/docs-src
 
 
 # envrc for the project (will call the generic envrc)
 baseenvrc="$( path__ envrc )"
 prjenvrc="${prjpth}"/.envrc
 
-cat - <<eos > ${prjenvrc}
-# vim: filetype=zsh: tabstop=3: shiftwidth=3: noexpandtab:
-
+cat - <<eosrc > "${prjenvrc}"
 # export the project path
 export __MKDOCSPRJS_PRJ_PATH="${prjpth}"
-
 # general .envrc
-source_env "${baseenvrc}"
-eos
+source_env_if_exists "${baseenvrc}"
+eosrc
 
 direnv allow "${prjenvrc}"
+
+
+## gitignore (just in case)
+ignore="${prjpth}"/.gitignore
+
+cat - <<eosgit > "${ignore}"
+/site/
+/*.pdf
+/.envrc
+eosgit

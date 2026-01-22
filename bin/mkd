@@ -7,6 +7,9 @@ function print_help__ () {
 mkd help:
 	this help
 
+mkd envrc:
+	creates the main envrc
+
 mkd nixupd:
 mkd nix-update:
 	updates the nix profile
@@ -80,6 +83,9 @@ if [[ -z ${thecmd} ]]; then
 else
 	case "${thecmd}"; in
 		help)  print_help__ ;;
+
+
+		envrc) gen-envrc ;;
 
 		nixupd) ;&
 		nix-update)

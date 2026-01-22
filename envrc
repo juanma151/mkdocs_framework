@@ -1,4 +1,0 @@
-# vim: filetype=zsh: tabstop=3: shiftwidth=3: noexpandtab:
-
-PATH_add /drive-development/data/frameworks/mkdocs/bin
-

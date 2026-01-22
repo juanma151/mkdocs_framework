@@ -1,0 +1,17 @@
+# vim: filetype=zsh: tabstop=3: shiftwidth=3: noexpandtab:
+
+mkpr-init__ || return 100
+
+local    basedir basefile
+local    bindir
+
+basedir="$( path__ base)"
+basefile=${basedir}/.envrc
+
+bindir="$( path__ bin )"
+
+cat - <<eosfr > "${basefile}"
+PATH_add "${bindir}"
+eosfr
+
+direnv allow "${basefile}"
